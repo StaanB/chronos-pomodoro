@@ -6,11 +6,12 @@ import { DefaultInput } from "../DefaultInput";
 import { useTaskContext } from "../../contexts/TaskContext/useTaskContext";
 import { getNextCycle } from "../../utils/getNextCycle";
 import { getNextCycleType } from "../../utils/getNextCycleType";
-import { formatSecondsTominutes } from "../../utils/formatSecondsToMinutes";
 import type { TaskModel } from "../../models/TaskModel";
+import { TaskActionTypes } from "../../contexts/TaskContext/taskActions";
+import { Tips } from "../Tips";
 
 export function MainForm() {
-  const { state, setState } = useTaskContext();
+  const { state, dispatch } = useTaskContext();
   const taskNameInput = useRef<HTMLInputElement>(null);
 
   // Ciclos
@@ -37,17 +38,11 @@ export function MainForm() {
       type: nextCycleType,
     };
 
-    const secondsRemaining = newTask.duration * 60;
+    dispatch({ type: TaskActionTypes.START_TASK, payload: newTask });
+  }
 
-    setState((prevState) => ({
-      ...prevState,
-      config: { ...prevState.config },
-      activeTask: newTask,
-      currentCycle: nextCycle,
-      secondsRemaining,
-      formattedSecondsRemaining: formatSecondsTominutes(secondsRemaining),
-      tasks: [...prevState.tasks, newTask],
-    }));
+  function handleInterruptTask() {
+    dispatch({ type: TaskActionTypes.INTERRUPT_TASK });
   }
   return (
     <form onSubmit={handleCreateNewTask} className="form">
@@ -62,7 +57,7 @@ export function MainForm() {
       </div>
 
       <div className="formRow">
-        <p>Lorem ipsum dolor sit amet.</p>
+        <Tips />
       </div>
 
       {state.currentCycle > 0 && (
@@ -72,20 +67,22 @@ export function MainForm() {
       )}
 
       <div className="formRow">
-        {!state.activeTask ? (
+        {!state.activeTask && (
           <DefaultButton
             aria-label="Iniciar nova tarefa"
             title="Iniciar nova tarefa"
             type="submit"
             icon={<PlayCircleIcon />}
           />
-        ) : (
+        )}
+        {!!state.activeTask && (
           <DefaultButton
             aria-label="Interromper tarefa atual"
             title="Interromper tarefa atual"
             type="button"
             color="red"
             icon={<StopCircleIcon />}
+            onClick={handleInterruptTask}
           />
         )}
       </div>
