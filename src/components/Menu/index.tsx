@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   HistoryIcon,
   HouseIcon,
@@ -6,8 +5,9 @@ import {
   SettingsIcon,
   SunIcon,
 } from "lucide-react";
-
 import styles from "./styles.module.css";
+import { useState, useEffect } from "react";
+import { RouterLink } from "../RouterLink";
 
 type AvailableThemes = "dark" | "light";
 
@@ -29,9 +29,7 @@ export function Menu() {
     event.preventDefault();
 
     setTheme((prevTheme) => {
-      const nextTheme: AvailableThemes =
-        prevTheme === "dark" ? "light" : "dark";
-
+      const nextTheme = prevTheme === "dark" ? "light" : "dark";
       return nextTheme;
     });
   }
@@ -43,35 +41,38 @@ export function Menu() {
 
   return (
     <nav className={styles.menu}>
-      <a
-        href="#"
+      <RouterLink
         className={styles.menuLink}
-        aria-label="Ir para a home"
-        title="Ir para a home"
+        href="/"
+        aria-label="Ir para a Home"
+        title="Ir para a Home"
       >
         <HouseIcon />
-      </a>
-      <a
-        href="#"
+      </RouterLink>
+
+      <RouterLink
         className={styles.menuLink}
-        aria-label="Ver histórico"
-        title="Ver histórico"
+        href="/history/"
+        aria-label="Ver Histórico"
+        title="Ver Histórico"
       >
         <HistoryIcon />
-      </a>
-      <a
-        href="#"
+      </RouterLink>
+
+      <RouterLink
         className={styles.menuLink}
-        aria-label="Ir para configurações"
-        title="Ir para configurações"
+        href="/settings/"
+        aria-label="Configurações"
+        title="Configurações"
       >
         <SettingsIcon />
-      </a>
+      </RouterLink>
+
       <a
-        href="#"
         className={styles.menuLink}
-        aria-label="Alterar tema"
-        title="Alterar tema"
+        href="#"
+        aria-label="Mudar Tema"
+        title="Mudar Tema"
         onClick={handleThemeChange}
       >
         {nextThemeIcon[theme]}
